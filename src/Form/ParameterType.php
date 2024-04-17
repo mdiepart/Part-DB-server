@@ -56,6 +56,7 @@ use App\Entity\Parts\MeasurementUnit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
@@ -136,7 +137,13 @@ class ParameterType extends AbstractType
                 'style' => 'max-width: 8ch;',
             ],
         ]);
-
+        $builder->add('use_si_prefix', CheckboxType::class, [
+            'label' => false,
+            'required' => false,
+            'attr' => [
+                'class' => 'form-control-sm',
+            ],
+        ]);
         $builder->add('group', TextType::class, [
             'label' => false,
             'required' => false,

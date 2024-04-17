@@ -88,7 +88,7 @@ use function sprintf;
     normalizationContext: ['groups' => ['parameter:read', 'parameter:read:standalone',  'api:basic:read'], 'openapi_definition_name' => 'Read'],
     denormalizationContext: ['groups' => ['parameter:write', 'parameter:write:standalone', 'api:basic:write'], 'openapi_definition_name' => 'Write'],
 )]
-#[ApiFilter(LikeFilter::class, properties: ["name", "symbol", "unit", "group", "value_text"])]
+#[ApiFilter(LikeFilter::class, properties: ["name", "symbol", "unit", "use_si_prefix", "group", "value_text"])]
 #[ApiFilter(DateFilter::class, strategy: DateFilterInterface::EXCLUDE_NULL)]
 #[ApiFilter(RangeFilter::class, properties: ["value_min", "value_typical", "value_max"])]
 #[ApiFilter(OrderFilter::class, properties: ['name', 'id', 'addedDate', 'lastModified'])]
@@ -153,6 +153,13 @@ abstract class AbstractParameter extends AbstractNamedDBElement
     #[ORM\Column(type: Types::STRING)]
     #[Assert\Length(max: 50)]
     protected string $unit = '';
+
+    /**
+     * @var bool Whether the unit supports SI units prefixes (e.g. 100nF)
+     */
+    #[Groups(['full', 'parameter:read', 'parameter:write'])]
+    #[ORM\Column(type: Types::BOOLEAN)]
+    protected bool $use_si_prefix = false;
 
     /**
      * @var string a text value for the given property
@@ -413,6 +420,28 @@ abstract class AbstractParameter extends AbstractNamedDBElement
     public function setUnit(string $unit): self
     {
         $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * Returns whether the unit supports SI prefixes
+     * 
+     * @return $this
+     */
+    public function getUseSiPrefix(): bool
+    {
+        return $this->use_si_prefix;
+    }
+
+    /**
+     * Sets the support for SI prefix in unit
+     * 
+     * @return $this
+     */
+    public function setUseSiPrefix(bool $use_si_prefix): self
+    {
+        $this->use_si_prefix = $use_si_prefix;
 
         return $this;
     }
